@@ -5,8 +5,8 @@ import (
 	"net"
 
 	"github.com/eclipse/paho.mqtt.golang/packets"
-	"github.com/mainflux/mainflux/logger"
-	"github.com/mainflux/mainflux/pkg/errors"
+	"github.com/objenious/mproxy/logger"
+	"github.com/objenious/mproxy/pkg/errors"
 )
 
 const (

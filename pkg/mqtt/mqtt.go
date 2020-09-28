@@ -6,10 +6,10 @@ import (
 	"io"
 	"net"
 
-	"github.com/mainflux/mainflux/logger"
-	"github.com/mainflux/mainflux/pkg/errors"
-	"github.com/mainflux/mproxy/pkg/session"
-	mptls "github.com/mainflux/mproxy/pkg/tls"
+	"github.com/objenious/mproxy/logger"
+	"github.com/objenious/mproxy/pkg/errors"
+	"github.com/objenious/mproxy/pkg/session"
+	mptls "github.com/objenious/mproxy/pkg/tls"
 )
 
 var (

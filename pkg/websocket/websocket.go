@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/mainflux/mainflux/logger"
-	"github.com/mainflux/mproxy/pkg/session"
-	mptls "github.com/mainflux/mproxy/pkg/tls"
+	"github.com/objenious/mproxy/logger"
+	"github.com/objenious/mproxy/pkg/session"
+	mptls "github.com/objenious/mproxy/pkg/tls"
 )
 
 // Proxy represents WS Proxy.
