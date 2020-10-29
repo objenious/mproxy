@@ -2,11 +2,10 @@ package session
 
 import (
 	"crypto/x509"
-	"net"
-
 	"github.com/eclipse/paho.mqtt.golang/packets"
 	"github.com/objenious/mproxy/logger"
 	"github.com/objenious/mproxy/pkg/errors"
+	"net"
 )
 
 const (
@@ -74,6 +73,15 @@ func (s *Session) stream(dir direction, r, w net.Conn, errs chan error) {
 			if err := s.authorize(pkt); err != nil {
 				errs <- wrap(err, dir)
 				return
+			}
+		}
+
+		if dir == down {
+			switch p := pkt.(type) {
+			case *packets.PublishPacket:
+				s.logger.Debug(p.TopicName)
+				s.handler.OnSendToSubscriber(&s.Client, &p.TopicName, &p.Payload)
+				s.logger.Debug(p.TopicName)
 			}
 		}
 

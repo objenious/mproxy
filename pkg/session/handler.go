@@ -23,6 +23,9 @@ type Handler interface {
 	// After client successfully subscribed
 	Subscribe(client *Client, topics *[]string)
 
+	// After client successfully subscribed
+	OnSendToSubscriber(client *Client, topic *string, payload *[]byte)
+
 	// After client unsubscribed
 	Unsubscribe(client *Client, topics *[]string)
 

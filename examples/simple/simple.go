@@ -3,6 +3,7 @@ package simple
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/objenious/mproxy/logger"
 	"github.com/objenious/mproxy/pkg/session"
@@ -13,6 +14,7 @@ var _ session.Handler = (*Handler)(nil)
 // Handler implements mqtt.Handler interface
 type Handler struct {
 	logger logger.Logger
+	DLMap  sync.Map
 }
 
 // New creates new Event entity
@@ -40,6 +42,11 @@ func (h *Handler) AuthPublish(c *session.Client, topic *string, payload *[]byte)
 // prior forwarding to the MQTT broker
 func (h *Handler) AuthSubscribe(c *session.Client, topics *[]string) error {
 	h.logger.Info(fmt.Sprintf("AuthSubscribe() - clientID: %s, topics: %s", c.ID, strings.Join(*topics, ",")))
+	for i := range *topics {
+		h.DLMap.Store("/obj_dl/1/test/"+(*topics)[i], (*topics)[i])
+		(*topics)[i] = "/obj_dl/1/test/"+(*topics)[i]
+		h.logger.Debug("sub to " + (*topics)[i])
+	}
 	return nil
 }
 
@@ -56,6 +63,21 @@ func (h *Handler) Publish(c *session.Client, topic *string, payload *[]byte) {
 // Subscribe - after client successfully subscribed
 func (h *Handler) Subscribe(c *session.Client, topics *[]string) {
 	h.logger.Info(fmt.Sprintf("Subscribe() - username: %s, clientID: %s, topics: %s", c.Username, c.ID, strings.Join(*topics, ",")))
+}
+
+// OnSendToSubscriber - after client successfully subscribed
+func (h *Handler) OnSendToSubscriber(c *session.Client, topic *string, payload *[]byte) {
+	h.logger.Info(fmt.Sprintf("OnSendToSubscriber() - clientID: %s, topic: %s, payload: %s", c.ID, *topic, string(*payload)))
+
+	v, ok := h.DLMap.Load(*topic)
+	if !ok {
+		// use the topic as received
+		return
+	}
+
+	*topic = v.(string)
+	h.logger.Info(fmt.Sprintf("end OnSendToSubscriber() - clientID: %s, topic: %s, payload: %s", c.ID, *topic, string(*payload)))
+
 }
 
 // Unsubscribe - after client unsubscribed
